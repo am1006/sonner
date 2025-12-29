@@ -321,6 +321,8 @@ export class Toaster {
     this.toastInstances.forEach((instance) => {
       instance.element.dataset.expanded = String(expanded || this.options.expand);
     });
+    // Update positions to recalculate heights for expanded/collapsed state
+    this.updatePositions();
   }
 
   private subscribeToState(): void {
@@ -765,13 +767,40 @@ export class Toaster {
   }
 
   private updatePositions(): void {
-    const { visibleToasts, gap } = this.options;
+    const { visibleToasts, gap, expand } = this.options;
 
     // Use heights array order (newest first) to determine positioning
     const orderedToasts = this.heights
       .map((h) => this.toastInstances.get(h.toastId))
       .filter((instance): instance is ToastInstance => instance !== undefined && !instance.removed);
 
+    const newFrontHeight = orderedToasts.length > 0 ? orderedToasts[0].height : 0;
+    const isExpanded = this.expanded || expand;
+
+    // FIRST PASS: Lock current heights to enable transitions
+    // This captures the current rendered height before we change anything
+    // We do NOT change data-front here to avoid triggering opacity changes
+    orderedToasts.forEach((instance, index) => {
+      const { element: li } = instance;
+      const isFront = index === 0;
+
+      if (!isFront && !isExpanded) {
+        // Get current computed height and set it explicitly
+        // This gives the transition a "from" value
+        const currentHeight = li.getBoundingClientRect().height;
+        if (currentHeight > 0) {
+          li.style.height = `${currentHeight}px`;
+        }
+      }
+    });
+
+    // Force a reflow so the browser registers the current heights
+    // before we change them to new values
+    if (orderedToasts.length > 1) {
+      void this.listEl?.offsetHeight;
+    }
+
+    // SECOND PASS: Update heights and positions (but not data-front yet)
     let heightBefore = 0;
 
     orderedToasts.forEach((instance, index) => {
@@ -780,7 +809,6 @@ export class Toaster {
       const isVisible = index < visibleToasts;
 
       li.dataset.index = String(index);
-      li.dataset.front = String(isFront);
       li.dataset.visible = String(isVisible);
 
       const offset = index * gap + heightBefore;
@@ -792,13 +820,27 @@ export class Toaster {
       li.style.setProperty('--offset', `${offset}px`);
       li.style.setProperty('--initial-height', `${instance.height}px`);
 
+      // Set explicit height to enable smooth CSS transitions
+      if (isExpanded) {
+        li.style.height = `${instance.height}px`;
+      } else if (isFront) {
+        li.style.height = '';
+      } else {
+        li.style.height = `${newFrontHeight}px`;
+      }
+
       heightBefore += instance.height;
     });
 
-    // Update front toast height
+    // Update front toast height on the container
     if (this.listEl && orderedToasts.length > 0) {
-      this.listEl.style.setProperty('--front-toast-height', `${orderedToasts[0].height}px`);
+      this.listEl.style.setProperty('--front-toast-height', `${newFrontHeight}px`);
     }
+
+    // THIRD PASS: Update data-front
+    orderedToasts.forEach((instance, index) => {
+      instance.element.dataset.front = String(index === 0);
+    });
   }
 }
 
