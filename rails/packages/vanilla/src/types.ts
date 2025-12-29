@@ -3,7 +3,11 @@
  * Vanilla JS port of sonner's types
  */
 
-export type ToastTypes = 'normal' | 'action' | 'success' | 'info' | 'warning' | 'error' | 'loading' | 'default';
+// Built-in types with icons
+export type BuiltInToastTypes = 'normal' | 'action' | 'success' | 'info' | 'warning' | 'error' | 'loading' | 'default';
+
+// Allow any string for custom types (e.g., 'congrats', 'celebration')
+export type ToastTypes = BuiltInToastTypes | (string & {});
 
 export type Position = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
 

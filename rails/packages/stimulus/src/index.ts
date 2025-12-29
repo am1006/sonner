@@ -159,6 +159,7 @@ export class ToastController extends Controller {
     const type = this.typeValue;
     const message = this.messageValue;
 
+    // Built-in types use their specific methods
     switch (type) {
       case 'success':
         toast.success(message, options);
@@ -175,8 +176,13 @@ export class ToastController extends Controller {
       case 'loading':
         toast.loading(message, options);
         break;
-      default:
+      case 'default':
+      case '':
         toast.message(message, options);
+        break;
+      default:
+        // Custom types (e.g., 'congrats', 'celebration')
+        toast.withType(type, message, options);
     }
   }
 }

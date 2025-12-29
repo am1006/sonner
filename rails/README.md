@@ -310,7 +310,7 @@ end
 
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `data-toast-type-value` | String | No | `'default'`, `'success'`, `'error'`, `'warning'`, `'info'`, `'loading'` |
+| `data-toast-type-value` | String | No | `'default'`, `'success'`, `'error'`, `'warning'`, `'info'`, `'loading'`, or any custom type |
 | `data-toast-message-value` | String | Yes | Toast message |
 | `data-toast-description-value` | String | No | Additional description |
 | `data-toast-duration-value` | Number | No | Duration in ms |
@@ -318,6 +318,321 @@ end
 | `data-toast-close-button-value` | Boolean | No | Show close button |
 | `data-toast-position-value` | String | No | Override position |
 | `data-toast-id-value` | String | No | Custom toast ID |
+
+---
+
+## Custom Toast Types
+
+You can create your own toast types beyond the built-in ones (`success`, `error`, `warning`, `info`, `loading`).
+
+### Step 1: Use your custom type
+
+```erb
+<%# In your views %>
+<div data-controller="toast"
+     data-toast-type-value="congrats"
+     data-toast-message-value="You did it!">
+</div>
+
+<%# Or with the helper %>
+<%= toast_tag "Achievement unlocked!", type: :congrats %>
+```
+
+```javascript
+// In JavaScript
+toast.withType('congrats', 'You did it!');
+toast.withType('celebration', 'Party time!', { duration: 5000 });
+```
+
+### Step 2: Add CSS for your custom type
+
+```css
+/* app/assets/stylesheets/toasts.css */
+
+/* Basic custom type styling */
+[data-sonner-toast][data-type="congrats"] {
+  --normal-bg: #fef3c7;
+  --normal-border: #f59e0b;
+  --normal-text: #92400e;
+}
+
+/* With rich colors enabled */
+[data-rich-colors="true"][data-sonner-toast][data-type="congrats"] {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border-color: #d97706;
+  color: white;
+}
+
+[data-rich-colors="true"][data-sonner-toast][data-type="congrats"] [data-close-button] {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* Another example: celebration type */
+[data-sonner-toast][data-type="celebration"] {
+  --normal-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --normal-text: white;
+  border: none;
+}
+```
+
+### Step 3 (Optional): Add a custom icon
+
+For custom types, you can provide an icon via the `icon` option:
+
+```javascript
+// Create a reusable function for your custom type
+function congratsToast(message, options = {}) {
+  return toast.withType('congrats', message, {
+    icon: '🎉',  // or an HTML string: '<svg>...</svg>'
+    ...options
+  });
+}
+
+// Usage
+congratsToast('Achievement unlocked!');
+```
+
+Or in your Stimulus controller, extend the ToastController:
+
+```javascript
+// app/javascript/controllers/custom_toast_controller.js
+import { Controller } from "@hotwired/stimulus";
+import { toast } from "sonner-stimulus";
+
+export default class extends Controller {
+  static values = {
+    type: String,
+    message: String,
+    icon: String,
+  }
+
+  connect() {
+    const icons = {
+      congrats: '🎉',
+      celebration: '🎊',
+      rocket: '🚀',
+    };
+
+    toast.withType(this.typeValue, this.messageValue, {
+      icon: this.hasIconValue ? this.iconValue : icons[this.typeValue],
+    });
+
+    this.element.remove();
+  }
+}
+```
+
+---
+
+## Styling & CSS Customization
+
+### CSS Variables
+
+Sonner uses CSS variables for theming. Override them in your stylesheet:
+
+```css
+/* app/assets/stylesheets/toasts.css */
+
+/* Global toast styling */
+[data-sonner-toaster] {
+  --width: 356px;
+  --gap: 14px;
+  --offset: 24px;
+
+  /* Colors */
+  --normal-bg: #fff;
+  --normal-border: #e5e7eb;
+  --normal-text: #1f2937;
+
+  /* Success */
+  --success-bg: #ecfdf5;
+  --success-border: #10b981;
+  --success-text: #065f46;
+
+  /* Error */
+  --error-bg: #fef2f2;
+  --error-border: #ef4444;
+  --error-text: #991b1b;
+
+  /* Warning */
+  --warning-bg: #fffbeb;
+  --warning-border: #f59e0b;
+  --warning-text: #92400e;
+
+  /* Info */
+  --info-bg: #eff6ff;
+  --info-border: #3b82f6;
+  --info-text: #1e40af;
+}
+```
+
+### Dark Theme
+
+```css
+[data-sonner-toaster][data-theme="dark"] {
+  --normal-bg: #1f2937;
+  --normal-border: #374151;
+  --normal-text: #f9fafb;
+
+  --success-bg: #065f46;
+  --success-text: #ecfdf5;
+
+  --error-bg: #991b1b;
+  --error-text: #fef2f2;
+}
+```
+
+### Rich Colors
+
+When `richColors` is enabled, toasts have more vibrant backgrounds:
+
+```css
+/* Customize rich color variants */
+[data-rich-colors="true"][data-sonner-toast][data-type="success"] {
+  background: #10b981;
+  border-color: #059669;
+  color: white;
+}
+
+[data-rich-colors="true"][data-sonner-toast][data-type="error"] {
+  background: #ef4444;
+  border-color: #dc2626;
+  color: white;
+}
+```
+
+### Toast Parts
+
+Style specific parts of the toast:
+
+```css
+/* Toast container */
+[data-sonner-toast] {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Title */
+[data-sonner-toast] [data-title] {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Description */
+[data-sonner-toast] [data-description] {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* Close button */
+[data-sonner-toast] [data-close-button] {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+[data-sonner-toast] [data-close-button]:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Action buttons */
+[data-sonner-toast] [data-button] {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+[data-sonner-toast] [data-action] {
+  background: #1f2937;
+  color: white;
+}
+
+[data-sonner-toast] [data-cancel] {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+}
+
+/* Icon container */
+[data-sonner-toast] [data-icon] {
+  width: 20px;
+  height: 20px;
+}
+
+/* Loading spinner */
+[data-sonner-toast] .sonner-spinner {
+  /* Customize spinner */
+}
+```
+
+### Position-Based Styling
+
+```css
+/* Style toasts differently based on position */
+[data-y-position="top"] [data-sonner-toast] {
+  /* Top toasts */
+}
+
+[data-y-position="bottom"] [data-sonner-toast] {
+  /* Bottom toasts */
+}
+
+[data-x-position="center"] [data-sonner-toast] {
+  /* Center-aligned toasts */
+}
+```
+
+### Animation Customization
+
+```css
+/* Custom enter animation */
+[data-sonner-toast][data-mounted="true"] {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Custom exit animation */
+[data-sonner-toast][data-removed="true"] {
+  animation: slideOut 0.2s ease-in forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+```
+
+### Data Attributes Reference
+
+| Attribute | Values | Description |
+|-----------|--------|-------------|
+| `data-sonner-toast` | - | Present on all toasts |
+| `data-type` | `success`, `error`, `warning`, `info`, `loading`, or custom | Toast type |
+| `data-rich-colors` | `true`, `false` | Rich colors enabled |
+| `data-styled` | `true`, `false` | Default styling applied |
+| `data-mounted` | `true`, `false` | Toast is mounted/visible |
+| `data-removed` | `true`, `false` | Toast is being removed |
+| `data-expanded` | `true`, `false` | Toast stack is expanded |
+| `data-front` | `true`, `false` | Is the frontmost toast |
+| `data-swiping` | `true`, `false` | Currently being swiped |
+| `data-swipe-out` | `true`, `false` | Being swiped out |
+| `data-y-position` | `top`, `bottom` | Vertical position |
+| `data-x-position` | `left`, `right`, `center` | Horizontal position |
+| `data-dismissible` | `true`, `false` | Can be dismissed |
+| `data-invert` | `true`, `false` | Colors inverted |
 
 ---
 

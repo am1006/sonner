@@ -117,6 +117,11 @@ class Observer {
     return this.create({ ...data, type: 'loading', message });
   }
 
+  // Create toast with any custom type (e.g., 'congrats', 'celebration')
+  withType(type: string, message: string, data?: ExternalToast): number | string {
+    return this.create({ ...data, type, message });
+  }
+
   promise<ToastData>(
     promise: PromiseT<ToastData>,
     data?: PromiseData<ToastData>
@@ -265,6 +270,7 @@ export const toast = Object.assign(
     dismiss: ToastState.dismiss.bind(ToastState),
     loading: ToastState.loading.bind(ToastState),
     custom: ToastState.custom.bind(ToastState),
+    withType: ToastState.withType.bind(ToastState),
   },
   { getHistory, getToasts }
 );

@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@hotwired/stimulus": "^3.2.2",
+    "esbuild": "^0.27.2",
     "typescript": "^5.0.0"
   },
   "keywords": [
