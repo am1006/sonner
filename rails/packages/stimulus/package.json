@@ -1,0 +1,42 @@
+{
+  "name": "sonner-stimulus",
+  "version": "1.0.0",
+  "description": "Stimulus controllers for Sonner toast library - for use with Rails Hotwire",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node build.js",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "sonner-vanilla": "*"
+  },
+  "peerDependencies": {
+    "@hotwired/stimulus": "^3.0.0"
+  },
+  "devDependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "toast",
+    "notifications",
+    "stimulus",
+    "hotwire",
+    "rails",
+    "sonner"
+  ],
+  "license": "MIT"
+}
