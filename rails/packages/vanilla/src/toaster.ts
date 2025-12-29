@@ -765,12 +765,16 @@ export class Toaster {
   }
 
   private updatePositions(): void {
-    const toasts = Array.from(this.toastInstances.values()).filter((i) => !i.removed);
     const { visibleToasts, gap } = this.options;
+
+    // Use heights array order (newest first) to determine positioning
+    const orderedToasts = this.heights
+      .map((h) => this.toastInstances.get(h.toastId))
+      .filter((instance): instance is ToastInstance => instance !== undefined && !instance.removed);
 
     let heightBefore = 0;
 
-    toasts.forEach((instance, index) => {
+    orderedToasts.forEach((instance, index) => {
       const { element: li } = instance;
       const isFront = index === 0;
       const isVisible = index < visibleToasts;
@@ -784,7 +788,7 @@ export class Toaster {
 
       li.style.setProperty('--index', String(index));
       li.style.setProperty('--toasts-before', String(index));
-      li.style.setProperty('--z-index', String(toasts.length - index));
+      li.style.setProperty('--z-index', String(orderedToasts.length - index));
       li.style.setProperty('--offset', `${offset}px`);
       li.style.setProperty('--initial-height', `${instance.height}px`);
 
@@ -792,8 +796,8 @@ export class Toaster {
     });
 
     // Update front toast height
-    if (this.listEl && toasts.length > 0) {
-      this.listEl.style.setProperty('--front-toast-height', `${toasts[0].height}px`);
+    if (this.listEl && orderedToasts.length > 0) {
+      this.listEl.style.setProperty('--front-toast-height', `${orderedToasts[0].height}px`);
     }
   }
 }
