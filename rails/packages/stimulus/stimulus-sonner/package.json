@@ -1,0 +1,45 @@
+{
+  "name": "stimulus-sonner",
+  "version": "0.1.0",
+  "description": "This package has moved to sonner-stimulus. An opinionated toast component for Hotwire (Stimulus)",
+  "author": "am1006",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/am1006/sonner.git",
+    "directory": "rails/packages/stimulus"
+  },
+  "homepage": "https://www.npmjs.com/package/sonner-stimulus",
+  "main": "index.js",
+  "module": "index.mjs",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "require": "./index.js"
+    },
+    "./styles.css": {
+      "default": "./styles.css"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.mjs",
+    "index.d.ts",
+    "styles.css",
+    "README.md"
+  ],
+  "dependencies": {
+    "sonner-stimulus": "^0.1.0"
+  },
+  "keywords": [
+    "toast",
+    "notifications",
+    "stimulus",
+    "hotwire",
+    "rails",
+    "sonner",
+    "turbo"
+  ]
+}

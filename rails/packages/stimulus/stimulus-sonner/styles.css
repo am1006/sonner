@@ -1,0 +1,3 @@
+/* stimulus-sonner has moved to sonner-stimulus */
+/* This file re-exports the styles for backwards compatibility */
+@import 'sonner-stimulus/styles.css';

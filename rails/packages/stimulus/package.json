@@ -1,7 +1,18 @@
 {
   "name": "sonner-stimulus",
-  "version": "1.0.0",
-  "description": "Stimulus controllers for Sonner toast library - for use with Rails Hotwire",
+  "version": "0.1.0",
+  "description": "An opinionated toast component for Hotwire (Stimulus)",
+  "author": "am1006",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/am1006/sonner.git",
+    "directory": "rails/packages/stimulus"
+  },
+  "homepage": "https://github.com/am1006/sonner/tree/hotwire/rails/packages/stimulus#readme",
+  "bugs": {
+    "url": "https://github.com/am1006/sonner/issues"
+  },
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -38,7 +49,7 @@
     "stimulus",
     "hotwire",
     "rails",
-    "sonner"
-  ],
-  "license": "MIT"
+    "sonner",
+    "turbo"
+  ]
 }

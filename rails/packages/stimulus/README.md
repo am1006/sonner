@@ -1,5 +1,7 @@
 # Sonner Stimulus
 
+An opinionated toast component for Hotwire (Stimulus).
+
 Stimulus controllers for [Sonner](https://sonner.emilkowal.ski/) toast notifications. Built on top of [sonner-vanilla](../vanilla).
 
 > **For complete Rails setup:** See the main [rails README](../../README.md).
@@ -172,3 +174,18 @@ export default class extends Controller {
 ## License
 
 MIT
+
+### To Publish
+
+```bash
+cd rails/packages/stimulus
+
+# Build
+npm run build
+
+# Preview what will be published
+npm publish --dry-run
+
+# Publish (you'll need to be logged in: npm login)
+npm publish
+```
