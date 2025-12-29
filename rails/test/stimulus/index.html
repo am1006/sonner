@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sonner Stimulus Test</title>
+  <link rel="stylesheet" href="../../packages/stimulus/dist/styles.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    p.subtitle {
+      color: #666;
+      margin-top: 0;
+      margin-bottom: 32px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .button-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .btn-default { background: #e5e5e5; color: #333; }
+    .btn-success { background: #22c55e; color: white; }
+    .btn-error { background: #ef4444; color: white; }
+    .btn-warning { background: #f59e0b; color: white; }
+    .btn-info { background: #3b82f6; color: white; }
+    .btn-loading { background: #6366f1; color: white; }
+    .btn-dismiss { background: #71717a; color: white; }
+
+    #debug {
+      background: #1a1a1a;
+      color: #4ade80;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sonner Stimulus Test</h1>
+  <p class="subtitle">Testing the sonner-stimulus package</p>
+
+  <div id="debug">Loading...</div>
+
+  <!-- Toaster container -->
+  <div id="toaster-container"
+       data-controller="toaster"
+       data-toaster-position-value="bottom-right"
+       data-toaster-theme-value="light"
+       data-toaster-rich-colors-value="true"
+       data-toaster-close-button-value="false"
+       data-toaster-expand-value="false"
+       data-toaster-duration-value="4000">
+  </div>
+
+  <!-- Toast Type Tests -->
+  <div class="section">
+    <h2>Toast Types (Direct API)</h2>
+    <div class="button-grid">
+      <button class="btn-default" id="btn-default">Default</button>
+      <button class="btn-success" id="btn-success">Success</button>
+      <button class="btn-error" id="btn-error">Error</button>
+      <button class="btn-warning" id="btn-warning">Warning</button>
+      <button class="btn-info" id="btn-info">Info</button>
+      <button class="btn-loading" id="btn-loading">Loading</button>
+    </div>
+  </div>
+
+  <!-- Toast with Description -->
+  <div class="section">
+    <h2>Toast with Description</h2>
+    <div class="button-grid">
+      <button class="btn-success" id="btn-desc-success">Success with Description</button>
+      <button class="btn-error" id="btn-desc-error">Error with Description</button>
+    </div>
+  </div>
+
+  <!-- Dismiss Controls -->
+  <div class="section">
+    <h2>Dismiss Controls</h2>
+    <div class="button-grid">
+      <button class="btn-dismiss" data-controller="toast-dismiss" data-action="click->toast-dismiss#dismissAll">
+        Dismiss All Toasts
+      </button>
+    </div>
+  </div>
+
+  <!-- Simulated Flash Messages -->
+  <div class="section">
+    <h2>Simulated Rails Flash Messages</h2>
+    <p style="color: #666; font-size: 14px; margin-bottom: 16px;">
+      Click to simulate how Rails flash messages would trigger toasts via ToastController:
+    </p>
+    <div class="button-grid">
+      <button class="btn-success" id="flash-notice">Simulate Flash Notice</button>
+      <button class="btn-error" id="flash-alert">Simulate Flash Alert</button>
+    </div>
+    <div id="flash"></div>
+  </div>
+
+  <!-- Import Map for ES modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "@hotwired/stimulus": "https://cdn.jsdelivr.net/npm/@hotwired/stimulus@3.2.2/+esm"
+      }
+    }
+  </script>
+
+  <script type="module">
+    const debug = document.getElementById('debug');
+    const log = (msg) => {
+      debug.textContent += msg + '\n';
+      console.log(msg);
+    };
+
+    try {
+      log('1. Loading Stimulus...');
+      const { Application, Controller } = await import('@hotwired/stimulus');
+      log('   ✓ Stimulus loaded');
+
+      log('2. Loading sonner-stimulus...');
+      const { ToasterController, ToastController, ToastDismissController, toast } = await import('../../packages/stimulus/dist/index.js');
+      log('   ✓ sonner-stimulus loaded');
+      log('   - ToasterController: ' + (typeof ToasterController));
+      log('   - ToastController: ' + (typeof ToastController));
+      log('   - toast: ' + (typeof toast));
+
+      log('3. Starting Stimulus application...');
+      const application = Application.start();
+      log('   ✓ Application started');
+
+      log('4. Registering controllers...');
+      application.register('toaster', ToasterController);
+      application.register('toast', ToastController);
+      application.register('toast-dismiss', ToastDismissController);
+      log('   ✓ Controllers registered');
+
+      log('5. Setting up button handlers...');
+
+      // Direct toast API buttons
+      document.getElementById('btn-default').addEventListener('click', () => {
+        log('   → Calling toast.message()');
+        toast.message('This is a default toast');
+      });
+      document.getElementById('btn-success').addEventListener('click', () => {
+        log('   → Calling toast.success()');
+        toast.success('Successfully saved!');
+      });
+      document.getElementById('btn-error').addEventListener('click', () => {
+        log('   → Calling toast.error()');
+        toast.error('Something went wrong');
+      });
+      document.getElementById('btn-warning').addEventListener('click', () => {
+        log('   → Calling toast.warning()');
+        toast.warning('Please review your input');
+      });
+      document.getElementById('btn-info').addEventListener('click', () => {
+        log('   → Calling toast.info()');
+        toast.info('New update available');
+      });
+      document.getElementById('btn-loading').addEventListener('click', () => {
+        log('   → Calling toast.loading()');
+        toast.loading('Processing...');
+      });
+
+      // With description
+      document.getElementById('btn-desc-success').addEventListener('click', () => {
+        toast.success('Event Created', { description: 'Your event has been scheduled for Monday at 3pm' });
+      });
+      document.getElementById('btn-desc-error').addEventListener('click', () => {
+        toast.error('Upload Failed', { description: 'The file exceeds the maximum size limit of 10MB' });
+      });
+
+      // Simulate Rails flash messages using ToastController
+      document.getElementById('flash-notice').addEventListener('click', () => {
+        log('   → Simulating flash notice (creating toast element)');
+        const flashDiv = document.createElement('div');
+        flashDiv.setAttribute('data-controller', 'toast');
+        flashDiv.setAttribute('data-toast-type-value', 'success');
+        flashDiv.setAttribute('data-toast-message-value', 'Record was successfully created.');
+        document.getElementById('flash').appendChild(flashDiv);
+      });
+
+      document.getElementById('flash-alert').addEventListener('click', () => {
+        log('   → Simulating flash alert (creating toast element)');
+        const flashDiv = document.createElement('div');
+        flashDiv.setAttribute('data-controller', 'toast');
+        flashDiv.setAttribute('data-toast-type-value', 'error');
+        flashDiv.setAttribute('data-toast-message-value', 'There was an error processing your request.');
+        flashDiv.setAttribute('data-toast-description-value', 'Please try again later.');
+        document.getElementById('flash').appendChild(flashDiv);
+      });
+
+      log('   ✓ Button handlers set up');
+      log('\n✅ Ready! Click any button to test.');
+
+    } catch (error) {
+      log('❌ Error: ' + error.message);
+      log('   Stack: ' + error.stack);
+    }
+  </script>
+</body>
+</html>

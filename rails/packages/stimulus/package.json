@@ -17,6 +17,7 @@
     "dist"
   ],
   "scripts": {
+    "prebuild": "npm run build -w sonner-vanilla",
     "build": "tsc && node build.js",
     "dev": "tsc --watch"
   },

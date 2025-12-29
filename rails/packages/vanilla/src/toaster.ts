@@ -239,15 +239,19 @@ export class Toaster {
       this.listEl.className = this.options.className;
     }
 
-    // Apply styles
+    // Apply styles - CSS custom properties must use setProperty
+    this.listEl.style.setProperty('--front-toast-height', '0px');
+    this.listEl.style.setProperty('--width', `${TOAST_WIDTH}px`);
+    this.listEl.style.setProperty('--gap', `${this.options.gap}px`);
+
+    // Apply offset styles (CSS custom properties)
     const offsetStyles = assignOffset(this.options.offset, this.options.mobileOffset);
-    Object.assign(this.listEl.style, {
-      '--front-toast-height': '0px',
-      '--width': `${TOAST_WIDTH}px`,
-      '--gap': `${this.options.gap}px`,
-      ...offsetStyles,
-      ...this.options.style,
+    Object.entries(offsetStyles).forEach(([key, value]) => {
+      this.listEl!.style.setProperty(key, value);
     });
+
+    // Apply any additional user styles
+    Object.assign(this.listEl.style, this.options.style);
 
     this.container.appendChild(this.listEl);
   }
