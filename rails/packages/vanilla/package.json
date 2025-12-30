@@ -1,6 +1,6 @@
 {
   "name": "sonner-vanilla",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An opinionated toast component for vanilla JavaScript/TypeScript",
   "author": "am1006",
   "license": "MIT",
