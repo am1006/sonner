@@ -1,6 +1,6 @@
 {
   "name": "sonner-stimulus",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An opinionated toast component for Hotwire (Stimulus)",
   "author": "am1006",
   "license": "MIT",
@@ -32,15 +32,13 @@
     "build": "tsc && node build.js",
     "dev": "tsc --watch"
   },
-  "dependencies": {
-    "sonner-vanilla": "*"
-  },
   "peerDependencies": {
     "@hotwired/stimulus": "^3.0.0"
   },
   "devDependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "esbuild": "^0.27.2",
+    "sonner-vanilla": "*",
     "typescript": "^5.0.0"
   },
   "keywords": [
