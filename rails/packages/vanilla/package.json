@@ -1,7 +1,18 @@
 {
   "name": "sonner-vanilla",
-  "version": "1.0.0",
-  "description": "A vanilla JavaScript/TypeScript port of the Sonner toast component",
+  "version": "0.1.0",
+  "description": "An opinionated toast component for vanilla JavaScript/TypeScript",
+  "author": "am1006",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/am1006/sonner.git",
+    "directory": "rails/packages/vanilla"
+  },
+  "homepage": "https://github.com/am1006/sonner/tree/hotwire/rails/packages/vanilla#readme",
+  "bugs": {
+    "url": "https://github.com/am1006/sonner/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -27,16 +38,9 @@
     "notifications",
     "vanilla",
     "javascript",
-    "typescript"
+    "typescript",
+    "sonner"
   ],
-  "author": "Emil Kowalski <e@emilkowal.ski>",
-  "license": "MIT",
-  "homepage": "https://sonner.emilkowal.ski/",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/emilkowalski/sonner.git",
-    "directory": "rails/packages/vanilla"
-  },
   "devDependencies": {
     "esbuild": "^0.27.2",
     "typescript": "^5.3.0"
