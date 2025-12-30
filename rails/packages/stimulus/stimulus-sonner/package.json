@@ -1,6 +1,6 @@
 {
   "name": "stimulus-sonner",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "This package has moved to sonner-stimulus. An opinionated toast component for Hotwire (Stimulus)",
   "author": "am1006",
   "license": "MIT",
