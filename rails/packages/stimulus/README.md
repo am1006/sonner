@@ -46,11 +46,53 @@ application.register("toast-dismiss", ToastDismissController);
 @import "sonner-stimulus/styles.css";
 ```
 
+## Usage with Turbo
+
+When using Turbo Frames or Turbo Streams for flash messages, place the **toaster container in your layout** (outside any turbo-frame), and only put **toast triggers inside the frame**.
+
+```erb
+<%# app/views/layouts/application.html.erb %>
+<body>
+  <%# Toaster container - persists across navigations %>
+  <div data-controller="toaster"
+       data-toaster-position-value="top-right"
+       data-toaster-rich-colors-value="true"
+       data-toaster-close-button-value="true">
+  </div>
+
+  <%= yield %>
+</body>
+```
+
+```erb
+<%# app/views/layouts/_flash.html.erb (or inline in layout) %>
+<turbo-frame id="flash">
+  <% if notice %>
+    <div data-controller="toast"
+         data-toast-type-value="success"
+         data-toast-message-value="<%= notice %>">
+    </div>
+  <% end %>
+  <% if alert %>
+    <div data-controller="toast"
+         data-toast-type-value="error"
+         data-toast-message-value="<%= alert %>">
+    </div>
+  <% end %>
+</turbo-frame>
+```
+
+**Why this pattern?**
+
+- The `toaster` controller creates a container (`<section>` + `<ol>`) that persists to receive toasts at any time
+- The `toast` controller is a trigger that removes itself immediately after showing the toast
+- Keeping the toaster outside the turbo-frame prevents the container from being replaced/duplicated on navigation
+
 ## Controllers
 
 ### ToasterController
 
-Creates the toast container. Add once to your layout.
+Creates the toast container. Add once to your layout (outside any turbo-frame).
 
 ```html
 <div data-controller="toaster"
